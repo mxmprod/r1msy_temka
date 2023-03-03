@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Categories {% endblock %}
+
+{% block body %}
+    <h1>{{ categories.name }}</h1>
+
+    {% if categories.products|length %}
+        <ul>
+        {% for product in categories.products %}
+            <li>
+                <a href="{{ path('product_show', {'id': products.id}) }}">
+                    {{ products.name }} - {{ products.price }}$
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No products found in this category.</p>
+    {% endif %}
+{% endblock %}

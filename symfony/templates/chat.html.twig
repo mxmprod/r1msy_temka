@@ -1,0 +1,138 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+<section style="background-color: #fff;">
+  <div class="container py-5">
+
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-6" style="position: relative">
+
+        <div class="card chat" data-chat-id="{{ chat.id }}" data-user-id="{{ app.user.id }}">
+          <div class="card-header d-flex justify-content-between align-items-center p-3">
+            <h5 class="mb-0">Chat</h5>
+          </div>
+          <div class="card-body chat-window">
+
+        {% for message in messages %}
+
+          {% if message.sender == app.user %}
+            <div class="d-flex flex-row justify-content-end chat-message" data-message-id="{{ message.id }}">
+              <div class="message-content">
+                <span class="reply-to-btn"><i class="fas fa-reply"></i></span>
+                <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary message-text">{{ message.text }}</p>
+                <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">{{ message.sentAt|date('H:i', 'Asia/Almaty') }}</p>
+              </div>
+              <img src="
+                {% if message.sender and message.sender.image %}
+                  /{{ message.sender.image.path }}
+                {% else %}
+                  https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp
+                {% endif %}
+                "
+                alt="avatar 1" style="width: 45px; height: 100%;">
+            </div>
+          {% else %}
+            <div class="d-flex flex-row justify-content-start mb-4 chat-message" data-message-id="{{ message.id }}">
+              <img src="
+                {% if message.sender and message.sender.image %}
+                  /{{ message.sender.image.path }}
+                {% else %}
+                  https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp
+                {% endif %}
+              "
+                alt="avatar 1" style="width: 45px; height: 100%;">
+              <div class="message-content">
+                <span class="reply-to-btn"><i class="fas fa-reply"></i></span>
+                <p class="small p-2 ms-3 mb-1 rounded-3 message-text" style="background-color: #f5f6f7;">{{ message.text }}</p>
+                <p class="small ms-3 mb-3 rounded-3 text-muted">{{ message.sentAt|date('H:i', 'Asia/Almaty') }}</p>
+              </div>
+            </div>
+          {% endif %}
+
+
+
+        {% endfor %}
+            {# <div class="d-flex flex-row justify-content-end">
+              <div>
+                <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">Okay then see you on sunday!!
+                </p>
+                <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:15</p>
+              </div>
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
+                alt="avatar 1" style="width: 45px; height: 100%;">
+            </div> #}
+
+          </div>
+          <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3 form-container">
+            <div class="reply-to-message" style="display: none">
+              <p class="small">reply-to-message</p>
+            </div>
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+              alt="avatar 3" style="width: 40px; height: 100%;">
+              {{ form_start(form) }}
+              {{ form_widget(form.text) }}
+        
+              <a class="ms-1 chat-btn text-muted" href="#!"><i class="fas fa-paperclip"></i></a>
+              <a class="ms-3 chat-btn text-muted" href="#!"><i class="fas fa-smile"></i></a>
+              <button id="send_message" class="ms-3 chat-btn" type="submit"><i class="fas fa-paper-plane"></i></button>
+            
+              {{ form_end(form) }}
+
+            <div class="prototypes">
+              <div class="d-flex flex-row justify-content-end chat-message message-from-me-prototype">
+              <div class="message-content">
+                  <span class="reply-to-btn"><i class="fas fa-reply"></i></span>
+                  <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary message-text"></p>
+                  <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end message-time"></p>
+                </div>
+                <img class="message-image" src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
+                  alt="avatar 1" style="width: 45px; height: 100%;">
+              </div>
+
+              <div class="d-flex flex-row justify-content-start mb-4 chat-message message-to-me-prototype">
+              
+                <img class="message-image" src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                  alt="avatar 1" style="width: 45px; height: 100%;">
+                <div class="message-content">
+                  <span class="reply-to-btn"><i class="fas fa-reply"></i></span>
+                  <p class="small p-2 ms-3 mb-1 rounded-3 message-text" style="background-color: #f5f6f7;"></p>
+                  <p class="small ms-3 mb-3 rounded-3 text-muted message-time"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-users">
+        {% for chatItem in chatData %}
+            <div class="d-flex flex-row justify-content-start mb-1 chat-user" data-user-id="{{ chatItem.user.id }}">
+                <img class="message-image"  src="
+                {% if chatItem.user.image %}
+                  /{{ chatItem.user.image.path }}
+                {% else %}
+                  https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp
+                {% endif %}
+              "
+                  alt="avatar 1" style="width: 45px; height: 100%;">
+                <div class="chat-info">
+                  <p class="small">{{ chatItem.user.username }}</p>
+                  {% set lastMessage = chatItem.lastMessage %}
+                  {% if lastMessage %}
+                  <p class="small text-truncate">
+                    {{ lastMessage.sender == app.user ? '<span class="fw-bold">You:</span> ' }}{{ lastMessage.text }}
+                  </p>
+                  {% else %}
+                    <p class="small">No messages..</p>
+                  {% endif %}
+                </div>
+              </div>
+        {% endfor %}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
